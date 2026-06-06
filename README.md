@@ -21,7 +21,7 @@ git clone
 
 2.- En la terminal de Bash, entrar al directorio del proyecto:
 ``bash
-cd Evaluaci-n1_Ing._de_soluciones_con_inteligencia_artificial
+cd Evaluaci-n2_Ing._de_soluciones_con_inteligencia_artificial
 
 3.- Para que el código funcione sin problemas, es necesario instalar unas dependencias:
 ``bash

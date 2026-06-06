@@ -462,6 +462,7 @@ def elegir_tipo_respuesta():
 #Orquestador para determinar qué herramienta usar según la pregunta del usuario.
 def orquestador(pregunta):
 
+    #Convierte la pregunta a minúsculas para facilitar la detección de palabras clave
     pregunta_lower = pregunta.lower()
 
     # Herramienta: cantidad de carreras
@@ -510,7 +511,7 @@ def orquestador(pregunta):
     elif buscar_carrera_similar(pregunta)[0]:
         return "buscar_carrera"
     
-    # Herramienta por defecto
+    # Herramienta: Chat general 
     else:
         return "ia"
 
