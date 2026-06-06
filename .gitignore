@@ -1,0 +1,37 @@
+# --- Archivos de entorno ---
+.env
+
+# --- Archivos compilados de Python ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# --- Entornos virtuales ---
+venv/
+env/
+.venv/
+
+# --- Notebooks temporales ---
+.ipynb_checkpoints/
+
+# --- Configuración de IDEs ---
+.vscode/
+.idea/
+*.swp
+
+# --- Archivos de sistema ---
+.DS_Store
+Thumbs.db
+
+# --- Dependencias ---
+*.egg-info/
+*.egg
+dist/
+build/
+
+# --- Logs ---
+*.log
+
+# --- Configuración de Jupyter ---
+.jupyter/

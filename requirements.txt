@@ -1,0 +1,16 @@
+# LLMs y APIs
+openai>=1.0.0
+
+# Framework de agentes y memoria
+langchain>=1.0.0
+langchain-community>=0.4.0
+
+# Variables de entorno
+python-dotenv>=1.0.0
+
+# Base de datos
+# sqlite3 viene incluido con Python
+
+# Jupyter
+jupyter>=1.0.0
+ipykernel>=6.0.0
