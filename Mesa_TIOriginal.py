@@ -5,7 +5,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import sqlite3
 
-#New imports
+#BufferWindowMemory
 from langchain_classic.memory import ConversationBufferWindowMemory
 import warnings
 
@@ -36,7 +36,6 @@ def crear_tablas_duoc():
     )
     """)
 
-    #Nuevo
     #Tabla para guardar el historial de consultas
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS historial_consultas (
@@ -95,6 +94,22 @@ def insertar_datos():
                     ("Ingeniería en Mecatrónica", "Sede San Joaquín"))
     cursor.execute("INSERT INTO carreras (nombre, sede) VALUES (?, ?)", 
                     ("Periodismo", "Sede Viña del Mar"))
+    cursor.execute("INSERT INTO carreras (nombre, sede) VALUES (?, ?)",
+                ("Analista Programador Computacional", "Sede Plaza Vespucio"))
+    cursor.execute("INSERT INTO carreras (nombre, sede) VALUES (?, ?)",
+                    ("Ciberseguridad", "Sede San Joaquín"))
+    cursor.execute("INSERT INTO carreras (nombre, sede) VALUES (?, ?)",
+                    ("Contabilidad General", "Sede Puente Alto"))
+    cursor.execute("INSERT INTO carreras (nombre, sede) VALUES (?, ?)",
+                    ("Publicidad", "Sede Viña del Mar"))
+    cursor.execute("INSERT INTO carreras (nombre, sede) VALUES (?, ?)",
+                    ("Prevención de Riesgos", "Sede Concepción"))
+    cursor.execute("INSERT INTO carreras (nombre, sede) VALUES (?, ?)",
+                    ("Turismo y Hotelería", "Sede Antonio Varas"))
+    cursor.execute("INSERT INTO carreras (nombre, sede) VALUES (?, ?)",
+                    ("Gastronomía Internacional", "Sede Padre Alonso de Ovalle"))
+    cursor.execute("INSERT INTO carreras (nombre, sede) VALUES (?, ?)",
+                    ("Ingeniería en Construcción", "Sede Valparaíso"))
 
     # Profesores
     cursor.execute("INSERT INTO profesores (nombre, carrera) VALUES (?, ?)", 
@@ -113,6 +128,22 @@ def insertar_datos():
                     ("Ricardo Soto", "Ingeniería en Mecatrónica"))
     cursor.execute("INSERT INTO profesores (nombre, carrera) VALUES (?, ?)", 
                     ("Claudia Herrera", "Periodismo"))
+    cursor.execute("INSERT INTO profesores (nombre, carrera) VALUES (?, ?)",
+                ("Miguel Fuentes", "Analista Programador Computacional"))
+    cursor.execute("INSERT INTO profesores (nombre, carrera) VALUES (?, ?)",
+                    ("Camila Rojas", "Ciberseguridad"))
+    cursor.execute("INSERT INTO profesores (nombre, carrera) VALUES (?, ?)",
+                    ("Patricia Silva", "Contabilidad General"))
+    cursor.execute("INSERT INTO profesores (nombre, carrera) VALUES (?, ?)",
+                    ("Sebastián López", "Publicidad"))
+    cursor.execute("INSERT INTO profesores (nombre, carrera) VALUES (?, ?)",
+                    ("Jorge Medina", "Prevención de Riesgos"))
+    cursor.execute("INSERT INTO profesores (nombre, carrera) VALUES (?, ?)",
+                    ("Valentina Araya", "Turismo y Hotelería"))
+    cursor.execute("INSERT INTO profesores (nombre, carrera) VALUES (?, ?)",
+                    ("Francisco Vargas", "Gastronomía Internacional"))
+    cursor.execute("INSERT INTO profesores (nombre, carrera) VALUES (?, ?)",
+                    ("Daniela Castillo", "Ingeniería en Construcción"))
     
     #Preguntas frecuentes
     cursor.execute("INSERT INTO preguntas_frecuentes (pregunta, respuesta) VALUES (?, ?)",
@@ -127,6 +158,24 @@ def insertar_datos():
     cursor.execute("INSERT INTO preguntas_frecuentes (pregunta, respuesta) VALUES (?, ?)",
                     ("¿Cómo descargar Microsoft Office gratis?",
                      "Puedes descargar Office desde el portal institucional usando tu correo DUOC."))
+    cursor.execute("INSERT INTO preguntas_frecuentes (pregunta, respuesta) VALUES (?, ?)",
+                ("¿Cómo obtener mi certificado de alumno regular?",
+                 "Puedes descargarlo desde el portal académico institucional."))
+    cursor.execute("INSERT INTO preguntas_frecuentes (pregunta, respuesta) VALUES (?, ?)",
+                    ("¿Cómo cambiar mi contraseña institucional?",
+                    "Debes acceder al portal institucional y seleccionar la opción de cambio de contraseña."))
+    cursor.execute("INSERT INTO preguntas_frecuentes (pregunta, respuesta) VALUES (?, ?)",
+                    ("¿Cómo acceder a Microsoft Teams?",
+                    "Puedes iniciar sesión con tu correo institucional y contraseña DUOC."))
+    cursor.execute("INSERT INTO preguntas_frecuentes (pregunta, respuesta) VALUES (?, ?)",
+                    ("¿Dónde veo mi horario de clases?",
+                    "El horario se encuentra disponible en el portal académico del estudiante."))
+    cursor.execute("INSERT INTO preguntas_frecuentes (pregunta, respuesta) VALUES (?, ?)",
+                    ("¿Cómo solicitar soporte técnico?",
+                    "Debes crear un ticket mediante la mesa de ayuda institucional."))
+    cursor.execute("INSERT INTO preguntas_frecuentes (pregunta, respuesta) VALUES (?, ?)",
+                    ("¿Cómo actualizar mis datos personales?",
+                    "Puedes actualizar tus datos desde tu perfil en el portal académico."))
     conn.commit()
     conn.close()
 
@@ -207,12 +256,14 @@ def buscar_faq(pregunta_usuario):
 
     return None
 
+#IMPORTANTE
 #Funcion para guardar cada consulta realizada por el estudiante
 def guardar_consulta(consulta, respuesta):
 
     conn = conectar_duoc()
     cursor = conn.cursor()
 
+    #Aca se guardan las consultas
     cursor.execute("""
         INSERT INTO historial_consultas
         (consulta, respuesta)
@@ -407,6 +458,7 @@ def elegir_tipo_respuesta():
 
     return tipo_map.get(tipo_op, "zero-shot")
 
+#IMPORTANTE
 #Orquestador para determinar qué herramienta usar según la pregunta del usuario.
 def orquestador(pregunta):
 
@@ -420,11 +472,12 @@ def orquestador(pregunta):
     elif "cuantos profesores" in pregunta_lower:
         return "cantidad_profesores"
     
+    #IMPORTANTE
     #Herramienta: para que la ia analice la tarea y decida que pasos ejecutar de 
     #manera autonoma
     elif (
         "profesores" in pregunta_lower
-        and "carrera" in pregunta_lower
+        or "carrera" in pregunta_lower
     ):
         return "planificador"
     
@@ -462,6 +515,7 @@ def orquestador(pregunta):
         return "ia"
 
 #Chat general 
+#Aca es donde se guardan las conversaciones 
 def chat_general(memory):
     print("\nEstas en el chat general, para salir escribe 'salir'\n")
     tipo = elegir_tipo_respuesta()
@@ -476,9 +530,11 @@ def chat_general(memory):
         try:
             pregunta = user_input.lower()
 
+            #IMPORTANTE
             #Configuracion del orquestador
             herramienta = orquestador(user_input)
 
+            #Aca muestro de manera explicita qué herramienta se ha seleccionado
             print(f"\n[ORQUESTADOR]")
             print(f"Herramienta seleccionada: {herramienta}\n")
             
@@ -486,7 +542,10 @@ def chat_general(memory):
             #Aca la IA actúa como planificador, es decir, analiza la pregunta del usuario
             #y decide qué pasos seguir para entregar una respuesta completa
             if herramienta == "planificador":
-
+                
+                #IMPORTANTE
+                #Aca se llama a la funcion de carrera similar para detectar si en la pregunta del usuario se menciona alguna carrera
+                
                 print("\n[PLANIFICADOR]")
                 print("Paso 1: Buscar carrera")
 
@@ -515,6 +574,8 @@ def chat_general(memory):
 
                 print("Asistente:", respuesta)
 
+                #IMPORTANTE
+                #Aca se guarda el contexto de la pregunta y respuesta en la memoria de conversación
                 memory.save_context(
                     {"input": user_input},
                     {"output": respuesta}
@@ -543,6 +604,8 @@ def chat_general(memory):
                     {"output": respuesta}
                 ) 
 
+                #IMPORTANTE
+                #Aca se guarda la consulta y respuesta en la base de datos para tener un historial persistente
                 guardar_consulta(user_input, respuesta)
                 continue
 
@@ -824,6 +887,7 @@ def ver_historial(memory):
         elif msg.type == "ai":
             print(f"Asistente: {msg.content}")
 
+#IMPORTANTE
 #Funcion para ver el historial guardado en la base de datos
 def ver_historial_bd():
 
@@ -863,7 +927,8 @@ def menu():
         category=DeprecationWarning
     )
 
-    #Acá se inicializa la configuracion de la memoria(BufferWindowMemory) para el chat general,
+    #BufferWindowMemory 
+    #Acá se inicializa la configuracion de la memoria para el chat general,
     #con un tamaño de ventana de 5 mensajes
     memory = ConversationBufferWindowMemory(
         k=5,
