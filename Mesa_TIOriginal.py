@@ -1,5 +1,6 @@
 #Imports y configuración de cliente OpenAI
 import os
+import warnings
 from difflib import get_close_matches #nuevo import
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -7,7 +8,6 @@ import sqlite3
 
 #BufferWindowMemory
 from langchain_classic.memory import ConversationBufferWindowMemory
-import warnings
 
 
 
@@ -19,6 +19,7 @@ client = OpenAI(
     base_url="https://models.inference.ai.azure.com",
     api_key=os.getenv("GITHUB_TOKEN")    
 )
+
 
 
 #Base de datos
@@ -257,7 +258,7 @@ def buscar_faq(pregunta_usuario):
     return None
 
 #IMPORTANTE
-#Funcion para guardar cada consulta realizada por el estudiante
+#Funcion para guardar cada consulta realizada por el estudiante en la base de datos 
 def guardar_consulta(consulta, respuesta):
 
     conn = conectar_duoc()
@@ -311,8 +312,7 @@ def obtener_info_carrera(nombre_carrera):
     conn.close()
     return carrera
 
-# Mensaje de confirmación
-print("Importaciones y configuraciones realizadas correctamente.")
+
 
 def ayuda_estudiantil():
     print("\n=== AYUDA ESTUDIANTIL ===")
@@ -964,6 +964,7 @@ def menu():
 #Inicialización
 crear_tablas_duoc()
 insertar_datos()
+print("Importaciones y configuraciones realizadas correctamente.")
 print("Sistema iniciado correctamente.") 
 menu()
 
